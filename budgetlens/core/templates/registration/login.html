@@ -1,13 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div style="text-align: center;">
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Login</button>
-  </form>
-  <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+<div class="auth-container">
+<div class="auth-card">
+    <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to your Trackify account</p>
+    </div>
+    
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="auth-submit">Sign In</button>
+    </form>
+    
+    <div class="auth-links">
+        <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+    </div>
+</div>
 </div>
 {% endblock %}

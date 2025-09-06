@@ -1,12 +1,26 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<h2>Sign up</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Sign Up</button>
-</form>
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+<div class="auth-container">
+<div class="auth-card">
+    <div class="auth-header">
+        <h2>Create Account</h2>
+        <p>Join Trackify and start managing your finances</p>
+    </div>
+    
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="auth-submit">Create Account</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+    </div>
+</div>
+</div>
 {% endblock %}

@@ -1,13 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>Receipt Processed Successfully ✅</h2>
-<p><strong>Description:</strong> {{ expense.description }}</p>
-<p><strong>Amount:</strong> {{ expense.amount }} {{ expense.currency }}</p>
-<p><strong>Category:</strong> {{ expense.category }}</p>
-<p><strong>Date:</strong> {{ expense.expense_date }}</p>
-{% if expense.receipt_image %}
-<img src="{{ expense.receipt_image.url }}" alt="Receipt Image" width="300" style="max-width: 100%; height: auto;">
-{% endif %}
-<a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
+<link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
+<div class="upload-container">
+<div class="upload-card">
+    <div class="success-message">
+        Receipt Processed Successfully!
+    </div>
+    
+    <div class="detail-content">
+        <div class="detail-section">
+            <h3>Extracted Information</h3>
+            <div class="detail-item">
+                <span class="detail-label">Description</span>
+                <span class="detail-value">{{ expense.description }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Amount</span>
+                <span class="detail-value amount negative">{{ expense.amount }} {{ expense.currency }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Category</span>
+                <span class="detail-value">{{ expense.category }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">{{ expense.expense_date }}</span>
+            </div>
+        </div>
+    </div>
+    
+    {% if expense.receipt_image %}
+    <div class="receipt-container">
+        <h3>Receipt Image</h3>
+        <img src="{{ expense.receipt_image.url }}" alt="Receipt Image" class="receipt-image">
+    </div>
+    {% endif %}
+    
+    <div class="action-buttons">
+        <a href="{% url 'dashboard' %}" class="button primary">Back to Dashboard</a>
+        <a href="{% url 'add_expense' %}" class="button secondary">Add Another Expense</a>
+    </div>
+</div>
+</div>
 {% endblock %}

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container">
+<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+<div class="forms-container">
+<div class="form-container">
     <h2>Edit Expense</h2>
     <form action="{% url 'save_expense' expense.id %}" method="post">
         {% csrf_token %}
@@ -43,8 +46,9 @@
         </div>
 
         <div class="form-group">
-            <button type="submit">Save</button>
+            <button type="submit" class="submit-btn">Save Changes</button>
         </div>
     </form>
+</div>
 </div>
 {% endblock %}

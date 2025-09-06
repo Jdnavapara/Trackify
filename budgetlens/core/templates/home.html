@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+<div class="home-container">
 {% if user.is_authenticated %}
-<p>Hi {{ user.username }}!</p>
-<p><a href="{% url 'password_change' %}">Password Change</a></p>
+<div class="welcome-card">
+    <h1>Welcome back, {{ user.username }}!</h1>
+    <p>Manage your finances with ease and precision.</p>
+    <div class="welcome-links">
+        <a href="{% url 'dashboard' %}" class="primary">Go to Dashboard</a>
+        <a href="{% url 'password_change' %}" class="secondary">Change Password</a>
+    </div>
+</div>
 {% else %}
-<div style="text-align: center;">
-    <p>You are not logged in</p>
-    <p>
-        <a href="{% url 'login' %}" style="margin-right: 10px;">Log In</a>
-        <a href="{% url 'signup' %}" style="margin-right: 10px;">Sign Up</a>
-        <a href="{% url 'password_reset' %}">Password Reset</a>
-    </p>
+<div class="welcome-card">
+    <h1>Welcome to Trackify</h1>
+    <p>Track your finances with ease and precision. Get started by creating an account or logging in.</p>
+    <div class="welcome-links">
+        <a href="{% url 'login' %}" class="primary">Log In</a>
+        <a href="{% url 'signup' %}" class="secondary">Sign Up</a>
+        <a href="{% url 'password_reset' %}" class="secondary">Reset Password</a>
+    </div>
 </div>
 {% endif %}
+</div>
 {% endblock %}

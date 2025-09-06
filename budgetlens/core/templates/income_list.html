@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container">
-    <h2>Income List</h2>
-    <div class="action-buttons">
-        <a href="{% url 'add_income' %}" class="button">Add New Income</a>
+<link rel="stylesheet" type="text/css" href="{% static 'css/lists.css' %}">
+<div class="lists-container">
+    <div class="list-header">
+        <h2>Income List</h2>
+        <a href="{% url 'add_income' %}" class="add-button">Add New Income</a>
     </div>
     
     {% if incomes %}
-    <div style="max-height: 400px; overflow-y: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div class="table-container">
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>Description</th>
@@ -21,20 +23,24 @@
             </thead>
             <tbody>
                 {% for income in incomes %}
-                <tr onclick="window.location.href='{% url 'income_detail' income.id %}'"
-                    style="cursor: pointer;">
+                <tr onclick="window.location.href='{% url 'income_detail' income.id %}'">
                     <td>{{ income.description }}</td>
-                    <td>{{ income.amount }}</td>
+                    <td class="amount positive">{{ income.amount }}</td>
                     <td>{{ income.currency }}</td>
                     <td>{{ income.income_date }}</td>
-                    <td>{{ income.category }}</td>
+                    <td>{{ income.category|default:"—" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     {% else %}
-    <p>No income entries yet. <a href="{% url 'add_income' %}">Add your first income</a>.</p>
+    <div class="empty-state">
+        <div class="empty-state-icon">💰</div>
+        <h3>No Income Entries Yet</h3>
+        <p>Start tracking your income by adding your first entry.</p>
+        <a href="{% url 'add_income' %}">Add Your First Income</a>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

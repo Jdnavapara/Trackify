@@ -1,0 +1,222 @@
+/* Forms Specific Styles */
+.forms-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-header h2 {
+    color: #1e293b;
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input[type="file"] {
+    padding: 0.75rem;
+    border: 2px dashed #3b82f6;
+    background: #eff6ff;
+    cursor: pointer;
+}
+
+.form-group input[type="file"]:hover {
+    background: #dbeafe;
+}
+
+/* Inline Form Groups */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Error Messages */
+.error {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #fecaca;
+    font-size: 0.9rem;
+}
+
+/* Success Messages */
+.success {
+    background: #f0fdf4;
+    color: #16a34a;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #bbf7d0;
+    font-size: 0.9rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons .button {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.action-buttons .button.primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.action-buttons .button.secondary {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.action-buttons .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Form Validation */
+.form-group input:invalid {
+    border-color: #ef4444;
+}
+
+.form-group input:valid {
+    border-color: #10b981;
+}
+
+/* Loading State */
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .form-header h2 {
+        font-size: 1.875rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+    
+    .form-header h2 {
+        font-size: 1.5rem;
+    }
+}

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container">
+<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+<div class="forms-container">
     <h2>Edit Income</h2>
     <form method="post">
         {% csrf_token %}
@@ -35,10 +37,11 @@
             <input type="text" id="id_category" name="category" value="{{ income.category }}">
         </div>
 
-        <div class="form-group">
-            <button type="submit">Save</button>
-            <a href="{% url 'income_detail' income.id %}" class="button">Cancel</a>
+        <div class="action-buttons">
+            <button type="submit" class="button primary">Save Changes</button>
+            <a href="{% url 'income_detail' income.id %}" class="button secondary">Cancel</a>
         </div>
     </form>
+</div>
 </div>
 {% endblock %}
