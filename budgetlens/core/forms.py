@@ -1,10 +1,6 @@
 from django import forms
 from django import forms
-<<<<<<< HEAD
-from .models import Expense
-=======
 from .models import Expense, Income
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 
 class ExpenseForm(forms.ModelForm):
     """Form to upload an expense"""
@@ -26,8 +22,6 @@ class ExpenseEditForm(forms.ModelForm):
         widgets = {
             'category': forms.Select(choices=Expense.CATEGORY_CHOICES),
         }
-<<<<<<< HEAD
-=======
 
 class IncomeForm(forms.ModelForm):
     """Form to add an income entry"""
@@ -46,5 +40,4 @@ class IncomeEditForm(forms.ModelForm):
         widgets = {
             'income_date': forms.DateInput(attrs={'type': 'date'}),
         }
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
         

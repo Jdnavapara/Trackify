@@ -24,9 +24,6 @@ OPEN_EXCHANGE_RATES_API_KEY = os.getenv("OPEN_EXCHANGE_RATES_API_KEY")
 OPEN_EXCHANGE_RATES_API_URL = "https://openexchangerates.org/api/historical/"
 
 log = logging.getLogger(__name__)
-<<<<<<< HEAD
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-=======
 
 # Initialize OpenAI client only if API key is available
 try:
@@ -36,7 +33,6 @@ try:
         client = None
 except (ImportError, Exception):
     client = None
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 
 
 def encode_image(image_path):
