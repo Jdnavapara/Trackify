@@ -172,11 +172,11 @@
 
 /* Form Validation */
 .form-group input:invalid {
-    border-color: #ef4444;
+    /* border-color: #ef4444; */
 }
 
 .form-group input:valid {
-    border-color: #10b981;
+    /* border-color: #10b981; */
 }
 
 /* Loading State */
