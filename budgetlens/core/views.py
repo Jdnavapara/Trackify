@@ -9,6 +9,7 @@ import requests
 from django.db.models import Sum, F, Value, FloatField
 from django.db.models.functions import Lower, Trim, Coalesce
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import redirect, render
 from .forms import ExpenseEditForm, ExpenseForm, IncomeForm, IncomeEditForm, ExpenseAddForm
 from .models import Expense, UserProfile, Income
@@ -17,6 +18,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from .services.receipt_parser import create_expense_from_receipt
 from .models import Expense
+
+class CustomLogoutView(LogoutView):
+    http_method_names = ['get', 'post']
 
 OPEN_EXCHANGE_RATES_API_KEY = os.getenv("OPEN_EXCHANGE_RATES_API_KEY")
 OPEN_EXCHANGE_RATES_API_URL = "https://openexchangerates.org/api/historical/"
