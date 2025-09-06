@@ -1,11 +1,29 @@
 /* Authentication Pages Styles */
 .auth-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-50%, -50%) rotate(180deg); }
 }
 
 .auth-card {
@@ -51,11 +69,11 @@
     margin-bottom: 2rem;
 }
 
-.form-group {
+.auth-form p {
     margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.auth-form p label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
@@ -63,7 +81,9 @@
     font-size: 0.95rem;
 }
 
-.form-group input {
+.auth-form p input[type="text"],
+.auth-form p input[type="password"],
+.auth-form p input[type="email"] {
     width: 100%;
     padding: 1rem 1.25rem;
     border: 2px solid #e5e7eb;
@@ -71,13 +91,36 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     background: #f9fafb;
+    box-sizing: border-box;
 }
 
-.form-group input:focus {
+.auth-form p input[type="text"]:focus,
+.auth-form p input[type="password"]:focus,
+.auth-form p input[type="email"]:focus {
     outline: none;
     border-color: #667eea;
     background: white;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Specific styling for username and password fields */
+.auth-form p input#id_username,
+.auth-form p input#id_password,
+.auth-form p input#id_password1,
+.auth-form p input#id_password2 {
+    position: relative;
+}
+
+.auth-form p input#id_username::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.auth-form p input#id_password::placeholder,
+.auth-form p input#id_password1::placeholder,
+.auth-form p input#id_password2::placeholder {
+    color: #9ca3af;
+    font-style: italic;
 }
 
 /* Submit Button */
