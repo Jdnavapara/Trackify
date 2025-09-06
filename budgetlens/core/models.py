@@ -9,7 +9,7 @@ class Income(models.Model):
     """Model to store the income details"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=3, default="EUR")
+    currency = models.CharField(max_length=3, default="INR")
     income_date = models.DateField()
     description = models.CharField(max_length=255, default="", blank=True)  # ✅ fixed here
     category = models.CharField(max_length=100, blank=True, null=True)
@@ -24,13 +24,14 @@ class Income(models.Model):
 class Expense(models.Model):
     """Model to store the expense details"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    receipt_image = models.ImageField(upload_to="receipts/")
+    receipt_image = models.ImageField(upload_to="receipts/", blank=True, null=True)
     expense_date = models.DateField(blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     currency = models.CharField(max_length=3, blank=True, null=True)
     amount_in_target_currency = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
+    description = models.CharField(max_length=255, default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -59,7 +60,7 @@ class Expense(models.Model):
 class UserProfile(models.Model):
     """Model to store the user's profile details"""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    target_currency = models.CharField(max_length=3, blank=True, null=True, default="EUR")
+    target_currency = models.CharField(max_length=3, blank=True, null=True, default="INR")
     objects = models.Manager()
 
 

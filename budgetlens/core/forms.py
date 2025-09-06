@@ -8,6 +8,7 @@ class ExpenseForm(forms.ModelForm):
         model = Expense
         fields = ['receipt_image', 'category', 'expense_date', 'amount', 'currency']
         widgets = {
+            'receipt_image': forms.FileInput(attrs={'required': True}),
             'category': forms.TextInput(attrs={'required': False}),
             'expense_date': forms.DateInput(attrs={'required': False}),
             'amount': forms.NumberInput(attrs={'required': False}),
@@ -39,5 +40,15 @@ class IncomeEditForm(forms.ModelForm):
         fields = ['amount', 'currency', 'income_date', 'description', 'category']
         widgets = {
             'income_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class ExpenseAddForm(forms.ModelForm):
+    """Form to add a manual expense entry"""
+    class Meta:
+        model = Expense
+        fields = ['amount', 'currency', 'expense_date', 'description', 'category']
+        widgets = {
+            'expense_date': forms.DateInput(attrs={'type': 'date'}),
+            'category': forms.Select(choices=Expense.CATEGORY_CHOICES),
         }
         

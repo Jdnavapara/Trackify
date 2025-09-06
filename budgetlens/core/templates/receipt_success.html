@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Receipt Processed Successfully ✅</h2>
+<p><strong>Description:</strong> {{ expense.description }}</p>
+<p><strong>Amount:</strong> {{ expense.amount }} {{ expense.currency }}</p>
+<p><strong>Category:</strong> {{ expense.category }}</p>
+<p><strong>Date:</strong> {{ expense.expense_date }}</p>
+{% if expense.receipt_image %}
+<img src="{{ expense.receipt_image.url }}" alt="Receipt Image" width="300" style="max-width: 100%; height: auto;">
+{% endif %}
+<a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
+{% endblock %}

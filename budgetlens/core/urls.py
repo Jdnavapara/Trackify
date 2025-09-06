@@ -3,13 +3,15 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('upload/', views.upload_receipt, name='upload'),
+    path("upload-receipt/", views.upload_receipt, name="upload_receipt"),
     path('dashboard/', views.dashboard, name='dashboard'),
     # Using the login template from core/templates/login.html
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
     path('expense/<int:expense_id>/', views.expense, name='expense'),
     path('save_expense/<int:expense_id>/', views.save_expense, name='save_expense'),
+    # Expense URLs
+    path('expense/add/', views.add_expense, name='add_expense'),
     # Income URLs
     path('income/add/', views.add_income, name='add_income'),
     path('income/list/', views.income_list, name='income_list'),

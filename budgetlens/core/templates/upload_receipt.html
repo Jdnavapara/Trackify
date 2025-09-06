@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Upload Receipt</h2>
+<form method="post" action="{% url 'upload_receipt' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="receipt_image" required>
+    <button type="submit">Upload</button>
+</form>
+{% endblock %}
+
+  

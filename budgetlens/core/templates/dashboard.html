@@ -14,7 +14,7 @@
     </div>
     <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; width: 30%;">
         <h3>Balance</h3>
-        <p style="font-size: 1.5em; font-weight: bold;">{{ total_income|add:total_expenses|floatformat:2 }} {{ user.userprofile.target_currency }}</p>
+        <p style="font-size: 1.5em; font-weight: bold;">{{ balance|floatformat:2 }} {{ user.userprofile.target_currency }}</p>
     </div>
 </div>
 

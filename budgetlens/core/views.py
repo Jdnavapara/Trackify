@@ -10,9 +10,13 @@ from django.db.models import Sum, F, Value, FloatField
 from django.db.models.functions import Lower, Trim, Coalesce
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from .forms import ExpenseEditForm, ExpenseForm, IncomeForm, IncomeEditForm
+from .forms import ExpenseEditForm, ExpenseForm, IncomeForm, IncomeEditForm, ExpenseAddForm
 from .models import Expense, UserProfile, Income
-
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
+from .services.receipt_parser import create_expense_from_receipt
+from .models import Expense
 
 OPEN_EXCHANGE_RATES_API_KEY = os.getenv("OPEN_EXCHANGE_RATES_API_KEY")
 OPEN_EXCHANGE_RATES_API_URL = "https://openexchangerates.org/api/historical/"
@@ -248,90 +252,23 @@ def get_exchange_rate(date, from_currency, to_currency):
 
 @login_required
 def upload_receipt(request):
-    """View to upload the receipt image and process it"""
-    log.debug("views : upload_receipt()")
-    if request.method == "POST":
-        form = ExpenseForm(request.POST, request.FILES)
-        if form.is_valid():
-            expense_dto = form.save(commit=False)
-            expense_dto.user = request.user
-            expense_dto.save()
+    if request.method == "POST" and request.FILES.get("receipt_image"):
+        receipt_image = request.FILES["receipt_image"]
 
-            category, expense_date, amount, currency = process_receipt(
-                expense_dto.receipt_image.path
-            )
+        # Save image
+        fs = FileSystemStorage()
+        filename = fs.save(receipt_image.name, receipt_image)
+        file_path = fs.path(filename)   # ✅ get the full system path
 
-            expense_dto.category = category
-            # Ensure date is in YYYY-MM-DD format
-            try:
-                # Check if date is already in correct format
-                import datetime
-                if expense_date:
-                    # Try to parse the date and reformat it to ensure YYYY-MM-DD format
-                    parsed_date = datetime.datetime.strptime(expense_date, "%Y-%m-%d").date()
-                    expense_dto.expense_date = parsed_date
-                else:
-                    # Use current date if no date was extracted
-                    expense_dto.expense_date = datetime.date.today()
-            except ValueError:
-                # If date parsing fails, use current date
-                log.error(f"Invalid date format: {expense_date}. Using current date instead.")
-                expense_dto.expense_date = datetime.date.today()
-                
-            # Ensure amount is a valid decimal
-            try:
-                if amount:
-                    # Convert to Decimal to ensure it's a valid decimal number
-                    from decimal import Decimal, InvalidOperation
-                    expense_dto.amount = Decimal(str(amount))
-                else:
-                    # Use default amount if none was extracted
-                    expense_dto.amount = Decimal('0.00')
-            except (ValueError, TypeError, InvalidOperation):
-                log.error(f"Invalid amount format: {amount}. Using default amount.")
-                expense_dto.amount = Decimal('0.00')
-                
-            expense_dto.currency = currency
+        # Now pass the path
+        expense = create_expense_from_receipt(request.user, file_path)
+        return render(request, "receipt_success.html", {"expense": expense})
 
-            user_profile = UserProfile.objects.get(user=request.user)
-            target_currency = user_profile.target_currency
+    return render(request, "upload_receipt.html")  
 
-            # Format the date as YYYY-MM-DD string for the API call
-            date_str = expense_dto.expense_date.strftime("%Y-%m-%d") if expense_dto.expense_date else datetime.date.today().strftime("%Y-%m-%d")
-            
-            exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
-                date_str, currency, target_currency
-            )
-            log.debug(
-                "Exchange rates: to USD %s, to target %s",
-                exchange_rate_to_usd,
-                exchange_rate_to_target,
-            )
 
-            if exchange_rate_to_usd and exchange_rate_to_target:
-                exchange_rate_to_usd = Decimal(str(exchange_rate_to_usd))
-                exchange_rate_to_target = Decimal(str(exchange_rate_to_target))
-                amount_decimal = Decimal(str(amount))
 
-                converted_amount_to_usd = amount_decimal / exchange_rate_to_usd
-                converted_amount_to_target = (
-                    converted_amount_to_usd * exchange_rate_to_target
-                )
-                expense_dto.amount_in_target_currency = round(
-                    converted_amount_to_target, 2
-                )
-                log.debug("Converted amount: %s", expense_dto.amount_in_target_currency)
-            else:
-                log.error("Could not convert amount to target currency")
 
-            expense_dto.save()
-            # Redirect to the expense page to adjust information
-            return redirect("expense", expense_id=expense_dto.id)
-        else:
-            log.error("Form errors: %s", form.errors)
-    else:
-        form = ExpenseForm()
-    return render(request, "upload.html", {"form": form})
 
 
 @login_required
@@ -366,11 +303,34 @@ def dashboard(request):
 
     log.debug("Aggregated Category Data: %s", categories)
 
-    # Calculate total income
-    total_income = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-    
+    # Calculate total income converted to target currency
+    user_profile = UserProfile.objects.get(user=request.user)
+    target_currency = user_profile.target_currency
+    total_income = 0
+    for income in incomes:
+        if income.currency == target_currency:
+            total_income += float(income.amount)
+        else:
+            # Convert to target currency
+            date_str = income.income_date.strftime("%Y-%m-%d")
+            exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
+                date_str, income.currency, target_currency
+            )
+            if exchange_rate_to_usd and exchange_rate_to_target:
+                exchange_rate_to_usd = Decimal(str(exchange_rate_to_usd))
+                exchange_rate_to_target = Decimal(str(exchange_rate_to_target))
+                converted_amount_to_usd = income.amount / exchange_rate_to_usd
+                converted_amount_to_target = converted_amount_to_usd * exchange_rate_to_target
+                total_income += float(converted_amount_to_target)
+            else:
+                total_income += float(income.amount)  # Fallback to original if conversion fails
+
     # Calculate total expenses
     total_expenses = expenses.aggregate(Sum('amount_in_target_currency'))['amount_in_target_currency__sum'] or 0
+    total_expenses = float(total_expenses)
+
+    # Calculate balance
+    balance = total_income - total_expenses
 
     return render(
         request,
@@ -382,6 +342,7 @@ def dashboard(request):
             "amounts": json.dumps(amounts),
             "total_income": total_income,
             "total_expenses": total_expenses,
+            "balance": balance,
         },
     )
 
@@ -397,6 +358,8 @@ def expense(request, expense_id):
     return render(
         request, "expense.html", {"expense": expense_detail, "user": request.user}
     )
+
+
 
 
 @login_required
@@ -461,6 +424,50 @@ def add_income(request):
     else:
         form = IncomeForm()
     return render(request, "add_income.html", {"form": form})
+
+@login_required
+def add_expense(request):
+    """View to add a manual expense entry"""
+    if request.method == "POST":
+        form = ExpenseAddForm(request.POST)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.user = request.user
+
+            # Currency conversion logic similar to upload_receipt
+            user_profile = UserProfile.objects.get(user=request.user)
+            target_currency = user_profile.target_currency
+
+            date_str = expense.expense_date.strftime("%Y-%m-%d") if expense.expense_date else None
+
+            from decimal import Decimal
+
+            if date_str:
+                exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
+                    date_str, expense.currency, target_currency
+                )
+            else:
+                exchange_rate_to_usd, exchange_rate_to_target = None, None
+
+            if exchange_rate_to_usd and exchange_rate_to_target:
+                exchange_rate_to_usd = Decimal(str(exchange_rate_to_usd))
+                exchange_rate_to_target = Decimal(str(exchange_rate_to_target))
+
+                converted_amount_to_usd = expense.amount / exchange_rate_to_usd
+                converted_amount_to_target = (
+                    converted_amount_to_usd * exchange_rate_to_target
+                )
+                expense.amount_in_target_currency = round(converted_amount_to_target, 2)
+            else:
+                expense.amount_in_target_currency = expense.amount
+
+            expense.save()
+            return redirect("dashboard")
+        else:
+            log.error("Form errors: %s", form.errors)
+    else:
+        form = ExpenseAddForm()
+    return render(request, "add_expense.html", {"form": form})
 
 @login_required
 def income_list(request):

@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Budget Lens{% endblock %}</title>
+    <title>{% block title %}Trackify{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/mvp.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body style="text-align: center;">
     <header style="padding: 0rem 1rem;">
-        <h1>Budget Lens</h1>
+        <h1>Trackify</h1>
+        <p style="font-style: italic; color: #4CAF50; font-weight: bold; margin-top: -10px; margin-bottom: 10px;">Track your finances with ease and precision.</p>
         {% if user.is_authenticated %}
         <nav style="justify-content: center; margin-bottom: 0rem; margin-right: 1rem;">
             <ul style="display: flex; list-style: none; padding: 0;">
@@ -21,9 +22,14 @@
                     </form>
                 </li>
                 <li>
-                    <form action="{% url 'upload' %}" method="post" style="display: inline; border: none; box-shadow: none;">
+                    <form action="{% url 'upload_receipt' %}" method="post" style="display: inline; border: none; box-shadow: none;">
                         {% csrf_token %}
                         <button type="submit" style="font-size: 0.8em; padding: 5px 10px;">Upload</button>
+                    </form>
+                </li>
+                <li>
+                    <form action="{% url 'add_expense' %}" method="get" style="display: inline; border: none; box-shadow: none;">
+                        <button type="submit" style="font-size: 0.8em; padding: 5px 10px;">Add Expense</button>
                     </form>
                 </li>
                 <li>

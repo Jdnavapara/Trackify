@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Add Expense</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="error">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_amount">Amount:</label>
+            <input type="number" id="id_amount" name="amount" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_currency">Currency:</label>
+            <input type="text" id="id_currency" name="currency" value="EUR" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_expense_date">Date:</label>
+            <input type="date" id="id_expense_date" name="expense_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            <input type="text" id="id_description" name="description" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_category">Category:</label>
+            <select id="id_category" name="category" required>
+                <option value="">Select Category</option>
+                <option value="Housing">Housing</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Dining Out">Dining Out</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Debt Payments">Debt Payments</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Education">Education</option>
+                <option value="Childcare">Childcare</option>
+                <option value="Pet Care">Pet Care</option>
+                <option value="Subscriptions">Subscriptions</option>
+                <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Save</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
