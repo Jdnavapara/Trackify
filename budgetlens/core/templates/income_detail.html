@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Income Details</h2>
+    <div class="income-details">
+        <p><strong>Description:</strong> {{ income.description }}</p>
+        <p><strong>Amount:</strong> {{ income.amount }} {{ income.currency }}</p>
+        <p><strong>Date:</strong> {{ income.income_date }}</p>
+        <p><strong>Category:</strong> {{ income.category|default:"Not specified" }}</p>
+        <p><strong>Created:</strong> {{ income.created_at }}</p>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{% url 'edit_income' income.id %}" class="button">Edit</a>
+        <a href="{% url 'income_list' %}" class="button">Back to List</a>
+    </div>
+</div>
+{% endblock %}

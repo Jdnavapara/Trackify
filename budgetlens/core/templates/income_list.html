@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Income List</h2>
+    <div class="action-buttons">
+        <a href="{% url 'add_income' %}" class="button">Add New Income</a>
+    </div>
+    
+    {% if incomes %}
+    <div style="max-height: 400px; overflow-y: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for income in incomes %}
+                <tr onclick="window.location.href='{% url 'income_detail' income.id %}'"
+                    style="cursor: pointer;">
+                    <td>{{ income.description }}</td>
+                    <td>{{ income.amount }}</td>
+                    <td>{{ income.currency }}</td>
+                    <td>{{ income.income_date }}</td>
+                    <td>{{ income.category }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No income entries yet. <a href="{% url 'add_income' %}">Add your first income</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

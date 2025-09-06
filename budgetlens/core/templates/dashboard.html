@@ -3,6 +3,24 @@
 {% block content %}
 <h2>Dashboard</h2>
 
+<<<<<<< HEAD
+=======
+<div class="summary-cards" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+    <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; width: 30%;">
+        <h3>Total Income</h3>
+        <p style="font-size: 1.5em; font-weight: bold;">{{ total_income }} {{ user.userprofile.target_currency }}</p>
+    </div>
+    <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; width: 30%;">
+        <h3>Total Expenses</h3>
+        <p style="font-size: 1.5em; font-weight: bold;">{{ total_expenses }} {{ user.userprofile.target_currency }}</p>
+    </div>
+    <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; width: 30%;">
+        <h3>Balance</h3>
+        <p style="font-size: 1.5em; font-weight: bold;">{{ total_income|add:total_expenses|floatformat:2 }} {{ user.userprofile.target_currency }}</p>
+    </div>
+</div>
+
+>>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 {% if amounts|length > 0 %}
 <div style="width: 100%; max-width: 600px; height: 400px; margin: auto;">
     <canvas id="expensesChart"></canvas>
@@ -11,6 +29,7 @@
     <p>No expenses to display.</p>
 {% endif %}
 
+<<<<<<< HEAD
 <!-- Existing table -->
 <div style="max-height: 400px; overflow-y: auto;">
     <table style="width: 100%; border-collapse: collapse;">
@@ -33,6 +52,69 @@
             {% endfor %}
         </tbody>
     </table>
+=======
+<div class="tabs" style="margin-top: 20px;">
+    <div class="tab-buttons" style="display: flex; margin-bottom: 10px;">
+        <button id="expenses-tab" class="tab-button active" style="flex: 1; padding: 10px; cursor: pointer; background-color: #f0f0f0; border: 1px solid #ddd;">Expenses</button>
+        <button id="income-tab" class="tab-button" style="flex: 1; padding: 10px; cursor: pointer; background-color: #f0f0f0; border: 1px solid #ddd;">Income</button>
+    </div>
+    
+    <div id="expenses-content" class="tab-content" style="display: block;">
+        <h3>Recent Expenses</h3>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr onclick="window.location.href='{% url 'expense' expense.id %}'"
+                        style="cursor: pointer;">
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.currency }}</td>
+                        <td>{{ expense.expense_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="income-content" class="tab-content" style="display: none;">
+        <h3>Recent Income</h3>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for income in incomes %}
+                    <tr onclick="window.location.href='{% url 'income_detail' income.id %}'"
+                        style="cursor: pointer;">
+                        <td>{{ income.description }}</td>
+                        <td>{{ income.amount }}</td>
+                        <td>{{ income.currency }}</td>
+                        <td>{{ income.income_date }}</td>
+                        <td>{{ income.category }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+>>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 </div>
 
 <!-- Script to render the chart -->
@@ -76,5 +158,30 @@
             }
         }
     });
+<<<<<<< HEAD
+=======
+    
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const expensesTab = document.getElementById('expenses-tab');
+        const incomeTab = document.getElementById('income-tab');
+        const expensesContent = document.getElementById('expenses-content');
+        const incomeContent = document.getElementById('income-content');
+        
+        expensesTab.addEventListener('click', function() {
+            expensesTab.classList.add('active');
+            incomeTab.classList.remove('active');
+            expensesContent.style.display = 'block';
+            incomeContent.style.display = 'none';
+        });
+        
+        incomeTab.addEventListener('click', function() {
+            incomeTab.classList.add('active');
+            expensesTab.classList.remove('active');
+            incomeContent.style.display = 'block';
+            expensesContent.style.display = 'none';
+        });
+    });
+>>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 </script>
 {% endblock %}

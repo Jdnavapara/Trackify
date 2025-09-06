@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Add Income</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="error">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_amount">Amount:</label>
+            <input type="number" id="id_amount" name="amount" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_currency">Currency:</label>
+            <input type="text" id="id_currency" name="currency" value="EUR" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_income_date">Date:</label>
+            <input type="date" id="id_income_date" name="income_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            <input type="text" id="id_description" name="description" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_category">Category (optional):</label>
+            <input type="text" id="id_category" name="category">
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Save</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
