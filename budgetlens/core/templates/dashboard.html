@@ -3,8 +3,6 @@
 {% block content %}
 <h2>Dashboard</h2>
 
-<<<<<<< HEAD
-=======
 <div class="summary-cards" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
     <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; width: 30%;">
         <h3>Total Income</h3>
@@ -20,7 +18,6 @@
     </div>
 </div>
 
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 {% if amounts|length > 0 %}
 <div style="width: 100%; max-width: 600px; height: 400px; margin: auto;">
     <canvas id="expensesChart"></canvas>
@@ -29,30 +26,6 @@
     <p>No expenses to display.</p>
 {% endif %}
 
-<<<<<<< HEAD
-<!-- Existing table -->
-<div style="max-height: 400px; overflow-y: auto;">
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-            <tr onclick="window.location.href='{% url 'expense' expense.id %}'" style="cursor: pointer;">
-                <td>{{ expense.category }}</td>
-                <td>{{ expense.amount }}</td>
-                <td>{{ expense.currency }}</td>
-                <td>{{ expense.expense_date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-=======
 <div class="tabs" style="margin-top: 20px;">
     <div class="tab-buttons" style="display: flex; margin-bottom: 10px;">
         <button id="expenses-tab" class="tab-button active" style="flex: 1; padding: 10px; cursor: pointer; background-color: #f0f0f0; border: 1px solid #ddd;">Expenses</button>
@@ -114,7 +87,6 @@
             </table>
         </div>
     </div>
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 </div>
 
 <!-- Script to render the chart -->
@@ -158,8 +130,6 @@
             }
         }
     });
-<<<<<<< HEAD
-=======
     
     // Tab switching functionality
     document.addEventListener('DOMContentLoaded', function() {
@@ -182,6 +152,5 @@
             expensesContent.style.display = 'none';
         });
     });
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 </script>
 {% endblock %}

@@ -10,14 +10,8 @@ from django.db.models import Sum, F, Value, FloatField
 from django.db.models.functions import Lower, Trim, Coalesce
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-<<<<<<< HEAD
-from openai import OpenAI
-from .forms import ExpenseEditForm, ExpenseForm
-from .models import Expense, UserProfile
-=======
 from .forms import ExpenseEditForm, ExpenseForm, IncomeForm, IncomeEditForm
 from .models import Expense, UserProfile, Income
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 
 
 OPEN_EXCHANGE_RATES_API_KEY = os.getenv("OPEN_EXCHANGE_RATES_API_KEY")
@@ -42,16 +36,6 @@ def encode_image(image_path):
 
 
 def process_receipt(image_path):
-<<<<<<< HEAD
-    """Process the receipt image using OpenAI API"""
-    log.debug("views : process_receipt()")
-    base64_image = encode_image(image_path)
-    category = "Sample Category"
-    expense_date = "2024-11-13"
-    amount = 10.00
-    currency = "EUR"
-
-=======
     """Process the receipt image using OpenAI API if available, otherwise return default values"""
     log.debug("views : process_receipt()")
     category = "Miscellaneous"
@@ -72,7 +56,6 @@ def process_receipt(image_path):
     
     base64_image = encode_image(image_path)
     
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
     base_categories = [
         "Housing",
         "Utilities",
@@ -91,34 +74,6 @@ def process_receipt(image_path):
         "Miscellaneous",
     ]
 
-<<<<<<< HEAD
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": (
-                            "Analyze the provided receipt and extract the following details: "
-                            "1. Category: Determine the category of the expense from this list: "
-                            f"{', '.join(base_categories)}. 2.Date: Identify the transaction date. "
-                            "3. Amount: Extract the expense amount as a decimal number. Consider: "
-                            "- A comma may serve as a thousand separator or decimal separator. "
-                            "- In KRW (Korean Won), the amount is never lower than a thousand. "
-                            "4. Currency: Identify the currency used in the expense starting "
-                            "(three-character ISO 4217 code). Respond strictly in JSON format, "
-                            "and ending with braces, without any additional markup language "
-                            'or explanation. Example response: {"category": "<category>",'
-                            ' "date": "<date>", "amount": <amount>,'
-                            ' "currency": "<currency>"}'
-                        ),
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
-=======
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -146,7 +101,6 @@ def process_receipt(image_path):
                         {
                             "type": "image_url",
                             "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
                     },
                 ],
             }
@@ -154,10 +108,6 @@ def process_receipt(image_path):
         temperature=0.2,
     )
 
-<<<<<<< HEAD
-    try:
-=======
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
         if (
             not response
             or not response.choices
@@ -168,34 +118,6 @@ def process_receipt(image_path):
         content = response.choices[0].message.content.strip()
         log.debug("Response from OpenAI")
         log.debug(content)
-<<<<<<< HEAD
-
-        if content.startswith("```json") and content.endswith("```"):
-            log.debug("Content: %s", content)
-            content = content[7:-3].strip()
-            log.debug("Content after stripping markdown: %s", content)
-
-        response_data = json.loads(content)
-
-        if "/" in response_data.get("date"):
-            response_data["date"] = response_data["date"].replace("/", "-")
-
-        category = response_data.get("category", "Miscellaneous")
-        if category not in base_categories:
-            category = "Miscellaneous"
-
-        expense_date = response_data.get("date")
-        amount = response_data.get("amount")
-        currency = response_data.get("currency").upper()
-
-        return category, expense_date, amount, currency
-    except json.JSONDecodeError as e:
-        log.error("JSON decode error: %s", e)
-        raise
-    except ValueError as e:
-        log.error("Value error: %s", e)
-        raise
-=======
     except Exception as e:
         log.error(f"Error processing receipt with OpenAI: {str(e)}")
         return {
@@ -299,7 +221,6 @@ def process_receipt(image_path):
                  "amount": amount,
                  "currency": currency,
              }
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
     except Exception as e:
         log.error("Unexpected error: %s", e)
         raise
@@ -341,10 +262,6 @@ def upload_receipt(request):
             )
 
             expense_dto.category = category
-<<<<<<< HEAD
-            expense_dto.expense_date = expense_date
-            expense_dto.amount = amount
-=======
             # Ensure date is in YYYY-MM-DD format
             try:
                 # Check if date is already in correct format
@@ -374,22 +291,16 @@ def upload_receipt(request):
                 log.error(f"Invalid amount format: {amount}. Using default amount.")
                 expense_dto.amount = Decimal('0.00')
                 
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
             expense_dto.currency = currency
 
             user_profile = UserProfile.objects.get(user=request.user)
             target_currency = user_profile.target_currency
 
-<<<<<<< HEAD
-            exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
-                expense_date, currency, target_currency
-=======
             # Format the date as YYYY-MM-DD string for the API call
             date_str = expense_dto.expense_date.strftime("%Y-%m-%d") if expense_dto.expense_date else datetime.date.today().strftime("%Y-%m-%d")
             
             exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
                 date_str, currency, target_currency
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
             )
             log.debug(
                 "Exchange rates: to USD %s, to target %s",
@@ -425,14 +336,9 @@ def upload_receipt(request):
 
 @login_required
 def dashboard(request):
-<<<<<<< HEAD
-    """View to display the user's expenses ordered by date and aggregated by category"""
-    expenses = Expense.objects.filter(user=request.user).order_by("-expense_date")
-=======
     """View to display the user's expenses and income ordered by date and aggregated by category"""
     expenses = Expense.objects.filter(user=request.user).order_by("-expense_date")
     incomes = Income.objects.filter(user=request.user).order_by("-income_date")
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
 
     expenses = expenses.annotate(category_normalized=Trim(Lower(F("category"))))
     log.debug("Normalized Category: %s", expenses.values("category_normalized"))
@@ -460,30 +366,22 @@ def dashboard(request):
 
     log.debug("Aggregated Category Data: %s", categories)
 
-<<<<<<< HEAD
-=======
     # Calculate total income
     total_income = incomes.aggregate(Sum('amount'))['amount__sum'] or 0
     
     # Calculate total expenses
     total_expenses = expenses.aggregate(Sum('amount_in_target_currency'))['amount_in_target_currency__sum'] or 0
 
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
     return render(
         request,
         "dashboard.html",
         {
             "expenses": expenses,
-<<<<<<< HEAD
-            "categories": json.dumps(categories),
-            "amounts": json.dumps(amounts),
-=======
             "incomes": incomes,
             "categories": json.dumps(categories),
             "amounts": json.dumps(amounts),
             "total_income": total_income,
             "total_expenses": total_expenses,
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
         },
     )
 
@@ -515,16 +413,11 @@ def save_expense(request, expense_id):
             user_profile = UserProfile.objects.get(user=request.user)
             target_currency = user_profile.target_currency
 
-<<<<<<< HEAD
-            exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
-                expense_form.expense_date, expense_form.currency, target_currency
-=======
             # Format the date as YYYY-MM-DD string for the API call
             date_str = expense_form.expense_date.strftime("%Y-%m-%d") if expense_form.expense_date else datetime.date.today().strftime("%Y-%m-%d")
             
             exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
                 date_str, expense_form.currency, target_currency
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
             )
 
             if exchange_rate_to_usd and exchange_rate_to_target:
@@ -552,8 +445,6 @@ def save_expense(request, expense_id):
         "expense.html",
         {"form": form, "expense": expense_edit, "user": request.user},
     )
-<<<<<<< HEAD
-=======
 
 @login_required
 def add_income(request):
@@ -597,4 +488,3 @@ def edit_income(request, income_id):
     else:
         form = IncomeEditForm(instance=income)
     return render(request, "edit_income.html", {"form": form, "income": income})
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9

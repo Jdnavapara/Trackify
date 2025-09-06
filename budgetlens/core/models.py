@@ -4,24 +4,23 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-<<<<<<< HEAD
-=======
+
 class Income(models.Model):
     """Model to store the income details"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=3, default="EUR")
     income_date = models.DateField()
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, default="", blank=True)  # ✅ fixed here
     category = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
-    
+
     def __str__(self):
         return f"{self.description} - {self.amount} {self.currency} on {self.income_date}"
 
->>>>>>> ca617e54b6346e6a6476509de411ac9ae0620eb9
+
 class Expense(models.Model):
     """Model to store the expense details"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -53,8 +52,9 @@ class Expense(models.Model):
         null=True
     )
 
-    def _str_(self):
+    def __str__(self):  # ✅ fixed from _str_
         return f"{self.category} - {self.amount} {self.currency} on {self.expense_date}"
+
 
 class UserProfile(models.Model):
     """Model to store the user's profile details"""
@@ -62,11 +62,13 @@ class UserProfile(models.Model):
     target_currency = models.CharField(max_length=3, blank=True, null=True, default="EUR")
     objects = models.Manager()
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     """Signal to create a user profile when a new user is created"""
     if created:
         UserProfile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
