@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body style="text-align: center;">
-    <header style="padding: 0rem 1rem;">
+    <header style="">
         <h1>Trackify</h1>
         <p style="font-style: italic; color: #4CAF50; font-weight: bold; margin-top: -10px; margin-bottom: 10px;">Track your finances with ease and precision.</p>
         {% if user.is_authenticated %}
@@ -49,12 +49,12 @@
         </nav>
         {% endif %}
     </header>
-    <main style="padding: 1rem;">
+    <main style="">
         {% block content %}
         <!-- Content goes here -->
         {% endblock %}
     </main>
-    <footer style="text-align: center;">
+    <footer style="">
         <p>&copy; 2025 Trackify.com - All rights reserved.</p>
     </footer>
 </body>
