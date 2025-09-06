@@ -3,31 +3,47 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}">
-<div class="upload-container">
-<div class="upload-card">
-    <div class="upload-header">
-        <h2>Upload Receipt</h2>
-        <p>Upload a receipt image to automatically extract expense details</p>
-    </div>
-    
-    <form method="post" action="{% url 'upload_receipt' %}" enctype="multipart/form-data" class="upload-form">
-        {% csrf_token %}
-        <div class="upload-area" onclick="document.getElementById('file-input').click()">
-            <div class="upload-icon">📄</div>
-            <div class="upload-text">Click to select a receipt image</div>
-            <div class="upload-subtext">or drag and drop your file here</div>
-            <input type="file" id="file-input" name="receipt_image" class="file-input" required accept="image/*">
-        </div>
-        
-        <div class="supported-formats">
-            <h4>Supported Formats</h4>
-            <p>JPG, PNG, PDF, and other common image formats</p>
-        </div>
-        
-        <button type="submit" class="upload-button">Upload Receipt</button>
-    </form>
-</div>
-</div>
-{% endblock %}
 
-  
+<div class="upload-container">
+    <div class="upload-card">
+        <div class="upload-header">
+            <h2>Upload Receipt</h2>
+            <p>Upload a receipt image to automatically extract expense details</p>
+        </div>
+
+        <form method="post" action="{% url 'upload_receipt' %}" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+
+            <div class="upload-area" onclick="triggerFileInput(event)" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Click to select a receipt image</div>
+                <div class="upload-subtext">or drag and drop your file here</div>
+                <input type="file" id="file-input" name="receipt_image" class="file-input" required accept="image/*" onclick="event.stopPropagation()">
+            </div>
+
+            <div class="supported-formats">
+                <h4>Supported Formats</h4>
+                <p>JPG, PNG, PDF, and other common image formats</p>
+            </div>
+
+            <button type="submit" class="upload-button">Upload Receipt</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function triggerFileInput(event) {
+    document.getElementById('file-input').click();
+}
+
+// Optional: handle drag & drop
+function handleDrop(event) {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if(files.length > 0) {
+        document.getElementById('file-input').files = files;
+    }
+}
+</script>
+
+{% endblock %}
