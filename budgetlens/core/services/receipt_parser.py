@@ -78,13 +78,25 @@ def parse_receipt_image(image_path):
 
 def create_expense_from_receipt(user, image_path):
     """Process receipt and create Expense object"""
+    from ..models import UserProfile
+    from decimal import Decimal
+    import datetime
+
     data = parse_receipt_image(image_path)
 
     with open(image_path, 'rb') as f:
         django_file = File(f)
         django_file.name = os.path.basename(image_path)
 
-        expense = Expense.objects.create(
+        # Handle case where amount couldn't be extracted
+        if data["amount"] is None:
+            data["amount"] = 0.00
+
+        # Handle case where date couldn't be extracted
+        if data["expense_date"] is None:
+            data["expense_date"] = datetime.date.today()
+
+        expense = Expense(
             user=user,
             receipt_image=django_file,
             amount=data["amount"],
@@ -93,4 +105,36 @@ def create_expense_from_receipt(user, image_path):
             category=data["category"],
             currency=data["currency"],
         )
+
+        # Currency conversion logic
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+            target_currency = user_profile.target_currency
+
+            date_str = expense.expense_date.strftime("%Y-%m-%d") if expense.expense_date else datetime.date.today().strftime("%Y-%m-%d")
+
+            from ..views import get_exchange_rate
+
+            exchange_rate_to_usd, exchange_rate_to_target = get_exchange_rate(
+                date_str, expense.currency, target_currency
+            )
+
+            if exchange_rate_to_usd and exchange_rate_to_target:
+                exchange_rate_to_usd = Decimal(str(exchange_rate_to_usd))
+                exchange_rate_to_target = Decimal(str(exchange_rate_to_target))
+
+                # Convert amount to Decimal for proper division
+                amount_decimal = Decimal(str(expense.amount))
+                converted_amount_to_usd = amount_decimal / exchange_rate_to_usd
+                converted_amount_to_target = (
+                    converted_amount_to_usd * exchange_rate_to_target
+                )
+                expense.amount_in_target_currency = round(converted_amount_to_target, 2)
+            else:
+                expense.amount_in_target_currency = expense.amount
+        except UserProfile.DoesNotExist:
+            # If no user profile, use original amount
+            expense.amount_in_target_currency = expense.amount
+
+        expense.save()
     return expense
